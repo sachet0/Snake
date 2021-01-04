@@ -26,54 +26,36 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-posX = 200
-posY = 200
 
-snakeSurf = pygame.Surface((20, 20))
+posX = 240
+posY = 240
+
+snakeSurf = pygame.Surface((15, 15))
 snakeSurf.fill(white)
 snakeRect = snakeSurf.get_rect()
-# print(snakeSurf.get_rect())
 snakeRect.move_ip(posX, posY)
 screen.blit(snakeSurf, snakeRect)
-# snakeRect = [posX, posY, 20 , 20]
 
-def snake():
-    screen.blit(snakeSurf, snakeRect)
 
-def move(direction):
-    keyPress = pygame.key.get_pressed()
-    if keyPress[K_UP] and snakeRect[1] > 0:
-        # snakeRect.move_ip(0, -20)
-        snakeRect[1] = snakeRect[1] - 20
-        # print("Up")
-    if keyPress[K_DOWN] and snakeRect[1] < 480:
-        # snakeRect.move_ip(0, 20)
-        snakeRect[1] = snakeRect[1] + 20
-        # print("Down")
-    if keyPress[K_LEFT] and snakeRect[0] > 0:
-        # snakeRect.move_ip(-20, 0)
-        snakeRect[0] = snakeRect[0] - 20
-        # print("Left")
-    if keyPress[K_RIGHT] and snakeRect[0] < 480:
-        # while snakeRect[0] < 480:
-        # snakeRect.move_ip(20, 0)
-        snakeRect[0] = snakeRect[0] + 20
-        draw()
-        print("Right", snakeRect)
-
-# def move(dir):
-#     if dir == 
-
-def changeDir():
-    # while snakeRect
-    pass
+def move(keyPress):
+    if keyPress == K_UP and snakeRect[1] > 0:
+        snakeRect.move_ip(0, -15)
+    if keyPress == K_DOWN and snakeRect[1] < 480:
+        snakeRect.move_ip(0, 15)
+    if keyPress == K_LEFT and snakeRect[0] > 0:
+        snakeRect.move_ip(-15, 0)
+    if keyPress == K_RIGHT and snakeRect[0] < 480:
+        snakeRect.move_ip(15, 0)
+    draw()
 
 
 def draw():
     screen.blit(snakeSurf, snakeRect)
     print("draw called")
 
-keypress = K_RIGHT
+
+keypress = None
+oldkey = keypress
 
 while True:
     for event in pygame.event.get():
@@ -81,20 +63,18 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # if event.type == KEYDOWN:
-        #     if event.key == K_UP and snakeRect[1] > 0:
-        #         # print("Up")
-        #     if event.key == K_DOWN and snakeRect[1] < 480:
-        #         # print("Down")
-        #     if event.key == K_LEFT and snakeRect[0] > 0:
-        #         # print("Left")
-        #     if event.key == K_RIGHT and snakeRect[0] < 480:
-        #         snakeRect[0] = snakeRect[0] + 20
-        #         draw()
-        #         print("Right", snakeRect)
+        if event.type == KEYDOWN:
+            oldkey = keypress
+            if event.key == K_UP and oldkey != K_DOWN:
+                keypress = event.key
+            if event.key == K_DOWN and oldkey != K_UP:
+                keypress = event.key
+            if event.key == K_LEFT and oldkey != K_RIGHT:
+                keypress = event.key
+            if event.key == K_RIGHT and oldkey != K_LEFT:
+                keypress = event.key
 
     screen.fill(black)
-    move(20)
-    draw()
+    move(keypress)
     pygame.display.update()
-    FPS.tick(10)
+    FPS.tick(5)
